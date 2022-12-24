@@ -17,13 +17,16 @@ const localCodeModel = require("../model/localCodeModel");
 //   //console.log(res);
 // };
 
-const main = async () => {
+const localCode = async (localInfo) => {
   const mongoose = connectMongoDB();
   const Local = localCodeModel(mongoose);
-  const res = await Local.findOne({ division: "연수구", region: "송도동" }).lean();
-  console.log("연수구 송도동의 고유 번호 : " + res.code);
-  mongoose.connection.close();
+  const res = await Local.findOne({
+    division: localInfo.division,
+    region: localInfo.region,
+  }).lean();
+
+  return res;
 };
 
-main();
+module.exports = localCode;
 //mongoose.connection.close();
