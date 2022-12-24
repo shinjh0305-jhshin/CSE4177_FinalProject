@@ -1,0 +1,27 @@
+{
+  "name": "cse4177_finalproject_20171759",
+  "version": "1.0.0",
+  "description": "Final project for Sogang Univ. 2022-F CSE4177(Internet Programming) ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinjh0305-jhshin/CSE4177_FinalProject.git"
+  },
+  "author": "JaeHyun Shin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinjh0305-jhshin/CSE4177_FinalProject/issues"
+  },
+  "homepage": "https://github.com/shinjh0305-jhshin/CSE4177_FinalProject#readme",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.20",
+    "puppeteer": "^19.4.1"
+  }
+}
