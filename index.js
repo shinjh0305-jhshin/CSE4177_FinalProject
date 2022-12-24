@@ -1,9 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
+require("dotenv").config();
 const crawlerRouter = require("./routes/crawlerRouter");
 const app = express();
 
 app.use(morgan("dev"));
+
 app.use("/crawler", crawlerRouter);
 
 app.listen(8080, () => {

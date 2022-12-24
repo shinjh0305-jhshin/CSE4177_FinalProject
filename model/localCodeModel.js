@@ -7,4 +7,8 @@ const localCodeSchema = new Schema({
   code: String,
 });
 
-module.exports = mongoose.model("localCode", localCodeSchema);
+function Local(mongoConnect) {
+  return mongoConnect.model("localcode", localCodeSchema);
+}
+
+module.exports = Local;
