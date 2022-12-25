@@ -1,4 +1,5 @@
 //네이버 부동산의 regionList를 가져오는 모듈 (인천시 한정)
+//한 번 만들어지면 더 이상 쓸 일 없는 모듈
 
 const axios = require("axios");
 const fs = require("fs");

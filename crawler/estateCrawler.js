@@ -1,10 +1,12 @@
+//크롤링할 localCode가 들어오면 실제로 크롤링을 진행하는 모듈
+//return : deal의 정보 배열
+
 const axios = require("axios");
 const _ = require("lodash");
 
 let hasMoreData = true;
 
 const crawlEstate = async (localCode) => {
-  localCode = 2820010100;
   let result = [];
   let pagination = 1;
   while (hasMoreData) {
@@ -31,6 +33,8 @@ const crawlEstate = async (localCode) => {
         } else {
           _.forEach(deals, function (value) {
             const filtered = _.pick(value, [
+              "area1",
+              "area2",
               "articleNo",
               "floorInfo",
               "dealOrWarrantPrc",

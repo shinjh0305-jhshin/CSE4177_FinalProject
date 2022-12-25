@@ -1,3 +1,5 @@
+//크롤링에 필요한 localcode를 mongoDB에서 가져오는 모듈
+
 const connectMongoDB = require("../tools/db");
 const localCodeModel = require("../model/localCodeModel");
 
