@@ -4,11 +4,11 @@
 const axios = require("axios");
 const _ = require("lodash");
 
-let hasMoreData = true;
-
 const crawlEstate = async (localCode) => {
   let result = [];
   let pagination = 1;
+  let hasMoreData = true;
+
   while (hasMoreData) {
     await axios
       .get(
