@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const dealSchema = new Schema({
+  localCode: String, //지역코드
   grossArea: Number, //공급면적
   exclusiveArea: Number, //전용면적
   articleNo: String, //일련번호
@@ -13,6 +14,7 @@ const dealSchema = new Schema({
   longitude: String, //경도
   warrant: Number, //기보증금
   rent: Number, //월세
+  earning: Number, //수익률
 });
 
 function Deal(mongoConnect) {

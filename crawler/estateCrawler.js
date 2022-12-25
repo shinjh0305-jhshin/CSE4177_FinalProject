@@ -41,6 +41,7 @@ const crawlEstate = async (localCode) => {
               "latitude",
               "longitude",
             ]);
+            filtered["localCode"] = localCode;
             result.push(filtered);
           });
           pagination++;
