@@ -20,6 +20,7 @@
   "homepage": "https://github.com/shinjh0305-jhshin/CSE4177_FinalProject#readme",
   "dependencies": {
     "@popperjs/core": "^2.11.6",
+    "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "element-plus": "^2.2.27",
     "path": "^0.12.7",
