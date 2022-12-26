@@ -41,18 +41,6 @@ const upsertDeal = async (deals, localCode) => {
 
   await Promise.all(promises);
   await Deal.create(newData);
-  console.log(newData);
-
-  //   const _data = {
-  //     division: "재현신",
-  //     region: "재현신",
-  //     code: "01099211569",
-  //   };
-  //   const new_data = new Local(_data);
-  //   const t = await new_data.save();
-  //   console.log(t);
-  //   //const res = await Local.findOne({ division: "미추홀구", region: "관교동" }).lean();
-  //   //console.log(res);
-  // };
 };
+
 module.exports = upsertDeal;

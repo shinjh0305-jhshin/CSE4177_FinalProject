@@ -1,0 +1,33 @@
+{
+  "name": "cse4177_finalproject_20171759_client",
+  "version": "1.0.0",
+  "description": "Final project for Sogang Univ. 2022-F CSE4177(Internet Programming)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinjh0305-jhshin/CSE4177_FinalProject.git"
+  },
+  "author": "JaeHyun Shin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinjh0305-jhshin/CSE4177_FinalProject/issues"
+  },
+  "homepage": "https://github.com/shinjh0305-jhshin/CSE4177_FinalProject#readme",
+  "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
+    "element-plus": "^2.2.27",
+    "path": "^0.12.7",
+    "vue": "^3.2.45"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.0.0",
+    "sass": "^1.57.1",
+    "vite": "^4.0.0"
+  }
+}
