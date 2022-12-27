@@ -49,12 +49,12 @@
             @change="changeArea"
           />
         </div>
-        <el-button type="info" @click="filterPriceVisible = true">매매가</el-button>
-        <el-button type="primary">전용면적</el-button>
-        <el-button type="primary">수익률</el-button>
+        <el-button :type="filterPriceButton" @click="filterPriceVisible = true">매매가</el-button>
+        <el-button :type="filterAreaButton" @click="filterAreaVisible = true">전용면적</el-button>
+        <el-button :type="filterEarningButton">수익률</el-button>
       </div>
 
-      <!-- 매매가 필터 -->
+      <!-- 매매가 필터 시작 -->
       <el-dialog v-model="filterPriceVisible" title="매매가 설정" width="30%">
         <div class="slider-demo-block">
           <el-slider
@@ -64,7 +64,7 @@
             :max="10"
             :format-tooltip="formatPriceto10"
             :marks="markto10"
-            show-input
+            @change="sliderChangeto10"
           />
         </div>
         <div class="slider-demo-block">
@@ -75,16 +75,72 @@
             :max="190"
             :format-tooltip="formatPriceto200"
             :marks="markto200"
-            show-input
+            @change="sliderChangeto200"
           />
         </div>
 
         <template #footer>
           <span class="dialog-footer">
-            <el-button type="primary" plain @click="resetpriceRange"> 초기화 </el-button>
+            <el-button plain @click="resetpriceRange"> 초기화 </el-button>
+            <el-button type="primary" @click="filterPriceVisible = false"> 확인 </el-button>
           </span>
         </template>
       </el-dialog>
+      <!-- 매매가 필터 종료 -->
+
+      <!-- 전용면적 필터 시작 -->
+      <el-dialog v-model="filterAreaVisible" title="전용면적 설정(평)" width="30%">
+        <div class="slider-demo-block">
+          <el-slider
+            v-model="areaRange"
+            range
+            :max="1000"
+            :format-tooltip="formatArea"
+            :marks="markArea"
+            @change="areaChange"
+          />
+        </div>
+        <div class="mt-4 d-flex justify-content-between">
+          <el-input-number v-model="areaRange[0]" :min="0" :max="1000" @change="handleChange" />
+          <span class="align-self-center"> ~ </span>
+          <el-input-number v-model="areaRange[1]" :min="0" :max="1000" @change="handleChange" />
+        </div>
+        <div style="padding-top: 20px; font-weight: bold">단위는 평 입니다</div>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button plain @click="resetAreaRange"> 초기화 </el-button>
+            <el-button type="primary" @click="filterAreaVisible = false"> 확인 </el-button>
+          </span>
+        </template>
+      </el-dialog>
+      <!-- 전용면적 필터 종료 -->
+
+      <!-- 수익률 필터 시작 -->
+      <el-dialog v-model="filterAreaVisible" title="전용면적 설정(평)" width="30%">
+        <div class="slider-demo-block">
+          <el-slider
+            v-model="areaRange"
+            range
+            :max="1000"
+            :format-tooltip="formatArea"
+            :marks="markArea"
+            @change="areaChange"
+          />
+        </div>
+        <div class="mt-4 d-flex justify-content-between">
+          <el-input-number v-model="areaRange[0]" :min="0" :max="1000" @change="handleChange" />
+          <span class="align-self-center"> ~ </span>
+          <el-input-number v-model="areaRange[1]" :min="0" :max="1000" @change="handleChange" />
+        </div>
+        <div style="padding-top: 20px; font-weight: bold">단위는 평 입니다</div>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button plain @click="resetAreaRange"> 초기화 </el-button>
+            <el-button type="primary" @click="filterAreaVisible = false"> 확인 </el-button>
+          </span>
+        </template>
+      </el-dialog>
+      <!-- 수익률 필터 종료 -->
 
       <div>
         <el-table v-loading="loading" stripe :data="tableData" height="450" style="width: 100%">
@@ -114,12 +170,18 @@ const _sort = ref(0);
 const value = ref(true);
 const loading = ref(false);
 const filterPriceVisible = ref(false);
+const filterAreaVisible = ref(false);
+const filterPriceButton = ref("");
+const filterAreaButton = ref("");
+const filterEarningButton = ref("");
 const grossArea = ref("grossArea"); //평 <-> m^2
 const exclusiveArea = ref("exclusiveArea"); //평 <-> m^2
-let priceRangeto10 = ref([0, 10]);
-let priceRangeto200 = ref([0, 200]);
-let tableData = reactive([]);
+let priceRangeto10 = ref([0, 10]); //0억~10억까지의 금액 필터링 데이터
+let priceRangeto200 = ref([0, 190]); //10억~200억~까지의 금액 필터링 데이터
+let areaRange = ref([0, 1000]); //공급면적 필터링 데이터
+let tableData = reactive([]); //사용자에게 표시 될 데이터
 const markto10 = reactive({
+  //필터링 가이드
   0: "0억",
   2.5: "2.5억",
   5: "5억",
@@ -127,11 +189,20 @@ const markto10 = reactive({
   10: "10억",
 });
 const markto200 = reactive({
+  //필터링 가이드
   0: "10억",
   40: "50억",
   90: "100억",
   140: "150억",
   190: "200억~",
+});
+const markArea = reactive({
+  0: "0평",
+  200: "200평",
+  400: "400평",
+  600: "600평",
+  800: "800평",
+  1000: "1000평~",
 });
 
 const sortby_name = ["earning", "price", "exclusiveArea"];
@@ -179,20 +250,71 @@ function changeArea() {
 }
 
 function formatPriceto10(price) {
+  //슬라이드를 옮길 때 표시 될 정보
   return price + "억";
 }
 
 function formatPriceto200(price) {
+  //슬라이드를 옮길 때 표시 될 정보
   const newPrice = price + 10;
-  if (newPrice === 200) {
-    return "200억~";
-  }
-  return newPrice + "억";
+  return `${newPrice}억${newPrice === 200 ? " ~" : ""}`;
+}
+
+function formatArea(area) {
+  //슬라이드를 옮길 때 표시 될 정보
+  const metric = Math.floor((area / 0.3025) * 10) / 10;
+  return `${area}평(${metric}㎡)${area === 1000 ? " ~" : ""}`;
 }
 
 function resetpriceRange() {
+  //사용자가 매매가 필터를 초기화할 때 사용할 함수
   priceRangeto10.value = [0, 10];
-  priceRangeto200.value = [0, 200];
+  priceRangeto200.value = [0, 190];
+  filterPriceButton.value = "";
+}
+
+function resetAreaRange() {
+  //사용자가 매매가 필터를 초기화할 때 사용할 함수
+  areaRange.value = [0, 1000];
+  filterAreaButton.value = "";
+}
+
+function sliderChangeto10() {
+  if (priceRangeto10.value[1] != 10) {
+    priceRangeto200.value = [0, 0];
+  }
+
+  const toOriginalValue =
+    priceRangeto10.value[1] - priceRangeto10.value[0] === 10 &&
+    priceRangeto200.value[1] - priceRangeto200.value[0] === 190;
+
+  if (!toOriginalValue) {
+    filterPriceButton.value = "primary";
+  } else {
+    filterPriceButton.value = "";
+  }
+}
+
+function sliderChangeto200() {
+  if (priceRangeto10.value[1] != 10 || priceRangeto200.value[0] != 0) {
+    priceRangeto10.value = [0, 0];
+  }
+
+  const toOriginalValue =
+    priceRangeto10.value[1] - priceRangeto10.value[0] === 10 &&
+    priceRangeto200.value[1] - priceRangeto200.value[0] === 190;
+
+  if (!toOriginalValue) {
+    filterPriceButton.value = "primary";
+  } else {
+    filterPriceButton.value = "";
+  }
+}
+
+function areaChange() {
+  if (areaRange.value[1] - areaRange.value[0] === 1000) {
+    filterAreaButton.value = "";
+  } else filterAreaButton.value = "primary";
 }
 </script>
 
@@ -205,7 +327,7 @@ function resetpriceRange() {
 }
 
 .slider-demo-block {
-  margin-right: 5px;
-  margin-bottom: 15px;
+  margin-right: 10px;
+  margin-bottom: 30px;
 }
 </style>
