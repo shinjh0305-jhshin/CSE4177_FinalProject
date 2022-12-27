@@ -165,6 +165,7 @@
 import { ref, reactive } from "vue";
 import { division, region, sort } from "@/dropDown.js";
 import { axiosGet, axiosPost } from "../tools/axios";
+import { uniq } from "lodash";
 
 const _city = "인천시";
 const _division = ref(0);
@@ -185,6 +186,7 @@ let priceRangeto200 = ref([0, 190]); //10억~200억~까지의 금액 필터링 �
 let areaRange = ref([0, 1000]); //공급면적 필터링 데이터
 let earningRange = ref([0, 10]); //수익률 필터링 데이터
 let tableData = reactive([]); //사용자에게 표시 될 데이터
+let floorFilters = reactive([]);
 const markto10 = reactive({
   //필터링 가이드
   0: "0억",
@@ -266,13 +268,45 @@ function fetchData() {
 
   loading.value = true;
   console.log(params);
-  //axiosGet("/api/deal/list", params, onFetchSuccess, onFetchFail);
+  axiosGet("/api/deal/list", params, onFetchSuccess, onFetchFail);
 }
 
-function onFetchSuccess(resp) {
+async function onFetchSuccess(resp) {
   loading.value = false;
   console.log("😊 Success", resp);
   tableData = resp;
+
+  let allFloors = [];
+  floorFilters.length = 0;
+
+  resp.forEach((x) => {
+    allFloors.push(x.floor);
+  });
+
+  allFloors = uniq(allFloors);
+
+  allFloors.map((x) => {
+    floorFilters.push({
+      text: `${x}층`,
+      value: x,
+    });
+  });
+  // let promises = resp.map(async (res, i) => {
+  //   allFloors.push(res.floor);
+  // });
+  // await Promise.all(promises);
+
+  // allFloors = uniq(allFloors);
+
+  // promises = allFloors.map(async (res, i) => {
+  //   floorFilters.push({
+  //     text: `${res}층`,
+  //     value: res,
+  //   });
+  // });
+  // await Promise.all(promises);
+
+  console.log(floorFilters);
 }
 
 function onFetchFail(resp) {
