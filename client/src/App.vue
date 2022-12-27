@@ -150,12 +150,24 @@
           <el-table-column prop="formattedPrice" label="매매가" width="150" />
           <el-table-column :prop="grossArea" label="공급면적" width="130" />
           <el-table-column :prop="exclusiveArea" label="전용면적" width="130" />
-          <el-table-column prop="floor" label="층" width="80" />
+          <el-table-column
+            prop="floor"
+            label="층"
+            width="80"
+            :filters="floorFilters"
+            :filter-method="floorFilterHandler"
+          />
           <el-table-column prop="story" label="전체층" width="80" />
           <el-table-column prop="warrant" label="기보증금(만원)" width="180" />
           <el-table-column prop="rent" label="월세(만원)" width="180" />
           <el-table-column prop="earning" label="수익률(%)" width="180" />
-          <el-table-column prop="articleNo" label="링크" />
+          <el-table-column prop="articleNo" label="링크">
+            <template #default="scope">
+              <el-button size="small" @click="gotoLink(scope.row.articleNo)"
+                >네이버 부동산</el-button
+              >
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </div>
@@ -284,6 +296,7 @@ async function onFetchSuccess(resp) {
   });
 
   allFloors = uniq(allFloors);
+  allFloors.sort();
 
   allFloors.map((x) => {
     floorFilters.push({
@@ -291,22 +304,6 @@ async function onFetchSuccess(resp) {
       value: x,
     });
   });
-  // let promises = resp.map(async (res, i) => {
-  //   allFloors.push(res.floor);
-  // });
-  // await Promise.all(promises);
-
-  // allFloors = uniq(allFloors);
-
-  // promises = allFloors.map(async (res, i) => {
-  //   floorFilters.push({
-  //     text: `${res}층`,
-  //     value: res,
-  //   });
-  // });
-  // await Promise.all(promises);
-
-  console.log(floorFilters);
 }
 
 function onFetchFail(resp) {
@@ -409,6 +406,15 @@ function earningChange() {
   if (earningRange.value[1] - earningRange.value[0] === 10) {
     filterEarningButton.value = "";
   } else filterEarningButton.value = "primary";
+}
+
+function floorFilterHandler(value, row, column) {
+  const property = column["property"];
+  return row[property] === value;
+}
+
+function gotoLink(no) {
+  window.open(`https://m.land.naver.com/article/info/${no}`, "_blank");
 }
 </script>
 
