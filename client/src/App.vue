@@ -236,18 +236,37 @@ function fetchData() {
     return;
   }
 
-  const getDivision = division[_division.value];
-  const getRegion = region[_division.value][_region.value];
-  const sortby = sortby_name[Math.floor(_sort.value / 2)];
-  const sortorder = sortorder_name[_sort.value % 2];
+  const params = {}; //fetch parmas
+
+  params.division = division[_division.value];
+  params.region = region[_division.value][_region.value];
+  params.sortby = sortby_name[Math.floor(_sort.value / 2)];
+  params.sortorder = sortorder_name[_sort.value % 2];
+
+  if (filterPriceButton.value != "") {
+    if (priceRangeto200.value[1] === 0) {
+      params.pricemin = priceRangeto10.value[0] * 10000;
+      params.pricemax = priceRangeto10.value[1] * 10000;
+    } else if (priceRangeto10.value[1] === 0) {
+      params.pricemin = (priceRangeto200.value[0] + 10) * 10000;
+      params.pricemax = (priceRangeto200.value[1] + 10) * 10000;
+    } else {
+      params.pricemin = priceRangeto10.value[0] * 10000;
+      params.pricemax = (priceRangeto200.value[1] + 10) * 10000;
+    }
+  }
+  if (filterAreaButton.value != "") {
+    params.areamin = areaRange.value[0];
+    params.areamax = areaRange.value[1];
+  }
+  if (filterEarningButton.value != "") {
+    params.earningmin = earningRange.value[0];
+    params.earningmax = earningRange.value[1];
+  }
 
   loading.value = true;
-  axiosGet(
-    "/api/deal/list",
-    { division: getDivision, region: getRegion, sortby: sortby, sortorder: sortorder },
-    onFetchSuccess,
-    onFetchFail
-  );
+  console.log(params);
+  //axiosGet("/api/deal/list", params, onFetchSuccess, onFetchFail);
 }
 
 function onFetchSuccess(resp) {
