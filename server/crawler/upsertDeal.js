@@ -34,12 +34,16 @@ const upsertDeal = async (deals, localCode) => {
 
     const earning = ((deal.rent * 12) / (deal.price - deal.warrant)) * 100;
     renamedObject.earning = Math.round(earning * 100) / 100;
-    const finalObject = _.omit(renamedObject, ["floorInfo"]);
 
+    renamedObject.grossPyeongArea = Math.round(renamedObject.grossArea * 0.3025 * 10) / 10;
+    renamedObject.exclusivePyeongArea = Math.round(renamedObject.exclusiveArea * 0.3025 * 10) / 10;
+
+    const finalObject = _.omit(renamedObject, ["floorInfo"]);
     newData.push(finalObject);
   });
 
   await Promise.all(promises);
+  console.log(newData);
   await Deal.create(newData);
 };
 

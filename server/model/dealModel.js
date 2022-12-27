@@ -4,8 +4,10 @@ const { Schema } = mongoose;
 const dealSchema = new Schema(
   {
     localCode: String, //지역코드
-    grossArea: Number, //공급면적
-    exclusiveArea: Number, //전용면적
+    grossArea: Number, //공급면적(m^2)
+    exclusiveArea: Number, //전용면적(m^2)
+    grossPyeongArea: Number, //공급면적(평)
+    exclusivePyeongArea: Number, //전용면적(평)
     articleNo: String, //일련번호
     floor: String, //층
     story: String, //전체층
