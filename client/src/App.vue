@@ -80,7 +80,12 @@
             @change="sliderChangeto200"
           />
         </div>
-
+        <div class="mt-4 d-flex justify-content-between">
+          <el-input-number v-model="priceRange[0]" :min="0" :max="200" @change="priceChange" />
+          <span class="align-self-center"> ~ </span>
+          <el-input-number v-model="priceRange[1]" :min="0" :max="200" @change="priceChange" />
+        </div>
+        <div style="padding-top: 20px; font-weight: bold">단위는 억원 입니다</div>
         <template #footer>
           <span class="dialog-footer">
             <el-button plain @click="resetpriceRange"> 초기화 </el-button>
@@ -195,6 +200,7 @@ const grossArea = ref("grossArea"); //평 <-> m^2
 const exclusiveArea = ref("exclusiveArea"); //평 <-> m^2
 let priceRangeto10 = ref([0, 10]); //0억~10억까지의 금액 필터링 데이터
 let priceRangeto200 = ref([0, 190]); //10억~200억~까지의 금액 필터링 데이터
+let priceRange = ref([0, 200]); //매매가 숫자 직접 입력하기 위한 변수
 let areaRange = ref([0, 1000]); //공급면적 필터링 데이터
 let earningRange = ref([0, 10]); //수익률 필터링 데이터
 let tableData = reactive([]); //사용자에게 표시 될 데이터
@@ -387,6 +393,20 @@ function sliderChangeto200() {
     filterPriceButton.value = "primary";
   } else {
     filterPriceButton.value = "";
+  }
+}
+
+function priceChange() {
+  if (priceRange.value[0] <= 10) {
+    priceRangeto10.value[0] = priceRange.value[0];
+  } else {
+    priceRangeto10.value = [0, 0];
+  }
+
+  if (priceRange.value[1] <= 10) {
+    priceRangeto200.value = [0, 0];
+  } else {
+    priceRangeto200.value[1] = priceRange.value[1] - 10;
   }
 }
 
