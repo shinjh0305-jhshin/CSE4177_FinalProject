@@ -1,0 +1,6 @@
+영상 및 git 링크
+- 영상 크기가 사캠 업로드 용량을 초과해서 아래  구글 드라이브 링크에서 다운로드 부탁드립니다.
+
+
+영상 : https://drive.google.com/drive/folders/1_skkB6grVre7Ig_NSVeKcU3xkbePFxpl?usp=sharing
+git : https://github.com/shinjh0305-jhshin/CSE4177_FinalProject

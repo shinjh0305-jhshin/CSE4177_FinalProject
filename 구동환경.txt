@@ -1,0 +1,9 @@
+구동 환경
+
+OS : Windows 10 Home 21H2 19044.2364
+프로세서 : AMD Ryzen 5 5500U with Radeon Graphics 2.10 GHz
+RAM : 16GB
+IDE : VSCode 1.74.2
+Nodejs : 16.14.2
+
+기타 패키지 별 버젼은 첨부 된 pakage.json 참조
