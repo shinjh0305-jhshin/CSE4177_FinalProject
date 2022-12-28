@@ -3,6 +3,12 @@
 const connectMongoDB = require("../tools/db");
 const dealModel = require("../model/dealModel");
 
+const max = {
+  price: 2000000,
+  area: 1000,
+  earning: 10,
+};
+
 const getDeals = async (localCode, sort) => {
   const mongoose = connectMongoDB();
   const Deal = dealModel(mongoose);
@@ -18,13 +24,22 @@ const getDeals = async (localCode, sort) => {
 
   //필터 값이 넘어온 부분을 처리해준다
   if (sort.pricemax) {
-    queryParams.price = { $gte: sort.pricemin, $lte: sort.pricemax };
+    queryParams.price = { $gte: sort.pricemin };
+    if (sort.pricemax < max.price) {
+      queryParams.price.$lte = sort.pricemax;
+    }
   }
   if (sort.areamax) {
-    queryParams.exclusivePyeongArea = { $gte: sort.areamin, $lte: sort.areamax };
+    queryParams.exclusivePyeongArea = { $gte: sort.areamin };
+    if (sort.areamax < max.area) {
+      queryParams.exclusivePyeongArea.$lte = sort.areamax;
+    }
   }
   if (sort.earningmax) {
-    queryParams.earning = { $gte: sort.earningmin, $lte: sort.earningmax };
+    queryParams.earning = { $gte: sort.earningmin };
+    if (sort.earningmax < max.earning) {
+      queryParams.earning.$lte = sort.earningmax;
+    }
   }
 
   let sortParams = {};

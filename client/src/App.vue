@@ -57,35 +57,28 @@
       </div>
 
       <!-- 매매가 필터 시작 -->
-      <el-dialog v-model="filterPriceVisible" title="매매가 설정" width="30%">
+      <el-dialog v-model="filterPriceVisible" title="매매가 설정" width="50%">
         <div class="slider-demo-block">
           <el-slider
-            v-model="priceRangeto10"
-            range
-            :step="0.1"
-            :max="10"
-            :format-tooltip="formatPriceto10"
-            :marks="markto10"
-            @change="sliderChangeto10"
-          />
-        </div>
-        <div class="slider-demo-block">
-          <el-slider
-            v-model="priceRangeto200"
+            v-model="priceRange"
             range
             :step="0.5"
-            :max="190"
-            :format-tooltip="formatPriceto200"
-            :marks="markto200"
-            @change="sliderChangeto200"
+            :max="200"
+            :format-tooltip="formatPrice"
+            :marks="markPrice"
+            @change="priceChange"
           />
         </div>
-        <div class="mt-4 d-flex justify-content-between">
+        <div class="mt-4 d-flex justify-content-center">
           <el-input-number v-model="priceRange[0]" :min="0" :max="200" @change="priceChange" />
-          <span class="align-self-center"> ~ </span>
+          <div class="align-self-center ms-2">억원</div>
+          <div class="align-self-center mx-5">~</div>
           <el-input-number v-model="priceRange[1]" :min="0" :max="200" @change="priceChange" />
+          <div class="align-self-center ms-2">억원</div>
         </div>
-        <div style="padding-top: 20px; font-weight: bold">단위는 억원 입니다</div>
+        <div style="padding-top: 20px; font-weight: bold">
+          최댓값을 200억원으로 설정하면 상한액 설정이 해제됩니다.
+        </div>
         <template #footer>
           <span class="dialog-footer">
             <el-button plain @click="resetpriceRange"> 초기화 </el-button>
@@ -109,10 +102,14 @@
         </div>
         <div class="mt-4 d-flex justify-content-between">
           <el-input-number v-model="areaRange[0]" :min="0" :max="1000" @change="areaChange" />
-          <span class="align-self-center"> ~ </span>
+          <div class="align-self-center ms-2">평</div>
+          <div class="align-self-center mx-5">~</div>
           <el-input-number v-model="areaRange[1]" :min="0" :max="1000" @change="areaChange" />
+          <div class="align-self-center ms-2">평</div>
         </div>
-        <div style="padding-top: 20px; font-weight: bold">단위는 평 입니다</div>
+        <div style="padding-top: 20px; font-weight: bold">
+          최댓값을 1000평으로 설정하면 상한면적 설정이 해제됩니다.
+        </div>
         <template #footer>
           <span class="dialog-footer">
             <el-button plain @click="resetAreaRange"> 초기화 </el-button>
@@ -137,10 +134,14 @@
         </div>
         <div class="mt-4 d-flex justify-content-between">
           <el-input-number v-model="earningRange[0]" :min="0" :max="10" @change="earningChange" />
-          <span class="align-self-center"> ~ </span>
+          <div class="align-self-center ms-2">%</div>
+          <div class="align-self-center mx-5">~</div>
           <el-input-number v-model="earningRange[1]" :min="0" :max="10" @change="earningChange" />
+          <div class="align-self-center ms-2">%</div>
         </div>
-        <div style="padding-top: 20px; font-weight: bold">단위는 % 입니다</div>
+        <div style="padding-top: 20px; font-weight: bold">
+          최댓값을 10%로 설정하면 상한수익률 설정이 해제됩니다.
+        </div>
         <template #footer>
           <span class="dialog-footer">
             <el-button plain @click="resetEarningRange"> 초기화 </el-button>
@@ -198,28 +199,29 @@ const filterAreaButton = ref("");
 const filterEarningButton = ref("");
 const grossArea = ref("grossArea"); //평 <-> m^2
 const exclusiveArea = ref("exclusiveArea"); //평 <-> m^2
-let priceRangeto10 = ref([0, 10]); //0억~10억까지의 금액 필터링 데이터
-let priceRangeto200 = ref([0, 190]); //10억~200억~까지의 금액 필터링 데이터
-let priceRange = ref([0, 200]); //매매가 숫자 직접 입력하기 위한 변수
+let priceRange = ref([0, 200]); //매매가 필터링 데이터
 let areaRange = ref([0, 1000]); //공급면적 필터링 데이터
 let earningRange = ref([0, 10]); //수익률 필터링 데이터
 let tableData = reactive([]); //사용자에게 표시 될 데이터
 let floorFilters = reactive([]);
-const markto10 = reactive({
+const markPrice = reactive({
   //필터링 가이드
   0: "0억",
-  2.5: "2.5억",
-  5: "5억",
-  7.5: "7.5억",
   10: "10억",
-});
-const markto200 = reactive({
-  //필터링 가이드
-  0: "10억",
-  40: "50억",
-  90: "100억",
-  140: "150억",
-  190: "200억~",
+  20: "20억",
+  30: "30억",
+  40: "40억",
+  50: "50억",
+  60: "60억",
+  70: "70억",
+  80: "80억",
+  90: "90억",
+  100: "100억",
+  120: "120억",
+  140: "140억",
+  160: "160억",
+  180: "180억",
+  200: "200억~",
 });
 const markArea = reactive({
   0: "0평",
@@ -264,16 +266,8 @@ function fetchData() {
   params.sortorder = sortorder_name[_sort.value % 2];
 
   if (filterPriceButton.value != "") {
-    if (priceRangeto200.value[1] === 0) {
-      params.pricemin = priceRangeto10.value[0] * 10000;
-      params.pricemax = priceRangeto10.value[1] * 10000;
-    } else if (priceRangeto10.value[1] === 0) {
-      params.pricemin = (priceRangeto200.value[0] + 10) * 10000;
-      params.pricemax = (priceRangeto200.value[1] + 10) * 10000;
-    } else {
-      params.pricemin = priceRangeto10.value[0] * 10000;
-      params.pricemax = (priceRangeto200.value[1] + 10) * 10000;
-    }
+    params.pricemin = priceRange.value[0] * 10000;
+    params.pricemax = priceRange.value[1] * 10000;
   }
   if (filterAreaButton.value != "") {
     params.areamin = areaRange.value[0];
@@ -323,15 +317,9 @@ function changeArea() {
     exclusiveArea.value === "exclusiveArea" ? "exclusivePyeongArea" : "exclusiveArea";
 }
 
-function formatPriceto10(price) {
+function formatPrice(price) {
   //슬라이드를 옮길 때 표시 될 정보
-  return price + "억";
-}
-
-function formatPriceto200(price) {
-  //슬라이드를 옮길 때 표시 될 정보
-  const newPrice = price + 10;
-  return `${newPrice}억${newPrice === 200 ? " ~" : ""}`;
+  return `${price}억${price === 200 ? " ~" : ""}`;
 }
 
 function formatArea(area) {
@@ -347,8 +335,7 @@ function formatEarning(earning) {
 
 function resetpriceRange() {
   //사용자가 매매가 필터를 초기화할 때 사용할 함수
-  priceRangeto10.value = [0, 10];
-  priceRangeto200.value = [0, 190];
+  priceRange.value = [0, 200];
   filterPriceButton.value = "";
 }
 
@@ -364,50 +351,13 @@ function resetEarningRange() {
   filterEarningButton.value = "";
 }
 
-function sliderChangeto10() {
-  if (priceRangeto10.value[1] != 10) {
-    priceRangeto200.value = [0, 0];
-  }
-
-  const toOriginalValue =
-    priceRangeto10.value[1] - priceRangeto10.value[0] === 10 &&
-    priceRangeto200.value[1] - priceRangeto200.value[0] === 190;
-
-  if (!toOriginalValue) {
-    filterPriceButton.value = "primary";
-  } else {
-    filterPriceButton.value = "";
-  }
-}
-
-function sliderChangeto200() {
-  if (priceRangeto10.value[1] != 10 || priceRangeto200.value[0] != 0) {
-    priceRangeto10.value = [0, 0];
-  }
-
-  const toOriginalValue =
-    priceRangeto10.value[1] - priceRangeto10.value[0] === 10 &&
-    priceRangeto200.value[1] - priceRangeto200.value[0] === 190;
-
-  if (!toOriginalValue) {
-    filterPriceButton.value = "primary";
-  } else {
-    filterPriceButton.value = "";
-  }
-}
-
 function priceChange() {
-  if (priceRange.value[0] <= 10) {
-    priceRangeto10.value[0] = priceRange.value[0];
-  } else {
-    priceRangeto10.value = [0, 0];
+  if (priceRange.value[1] < priceRange.value[0]) {
+    priceRange.value = [priceRange.value[1], priceRange.value[0]];
   }
-
-  if (priceRange.value[1] <= 10) {
-    priceRangeto200.value = [0, 0];
-  } else {
-    priceRangeto200.value[1] = priceRange.value[1] - 10;
-  }
+  if (priceRange.value[1] - priceRange.value[0] === 200) {
+    filterPriceButton.value = "";
+  } else filterPriceButton.value = "primary";
 }
 
 function areaChange() {
