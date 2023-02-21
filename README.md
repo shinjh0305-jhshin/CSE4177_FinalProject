@@ -40,6 +40,7 @@ npx nodemon
 ### 2. 클라이언트 시작하기
 ```
 cd ./client
+npm install
 npm run dev
 ```
 ### 3. 웹 어플리케이션 시작하기
