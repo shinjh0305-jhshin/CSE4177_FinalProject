@@ -44,4 +44,10 @@ npm install
 npm run dev
 ```
 ### 3. 웹 어플리케이션 시작하기
-* 부동산 수익률 검색기 : <http://localhost:5173>
+* 부동산 수익률 검색기 : <http://localhost:5173>   
+<br/>
+
+프로젝트 관련 문서
+-----------------
+* 발표 및 시연 동영상 : <https://drive.google.com/drive/folders/1_skkB6grVre7Ig_NSVeKcU3xkbePFxpl?usp=sharing>
+* API Docs : <https://documenter.getpostman.com/view/22330458/2s8Z6x3tWQ>
